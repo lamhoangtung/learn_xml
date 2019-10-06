@@ -76,5 +76,67 @@ namespace BaiThucHanh9
                 txtDiemLan2.Text = item.SubItems[4].Text;
             }
         }
+
+        private void them()
+        {
+            doc.Load(path);
+            XmlElement sinhvien, diemlan1, diemlan2;
+            XmlAttribute masv, monhoc;
+            sinhvien = doc.CreateElement("sinhvien");
+            diemlan1 = doc.CreateElement("diemlan1");
+            diemlan2 = doc.CreateElement("diemlan2");
+            masv = doc.CreateAttribute("masv");
+            monhoc = doc.CreateAttribute("monhoc");
+            diemlan1.InnerText = txtDiemLan1.Text;
+            diemlan2.InnerText = txtDiemLan2.Text;
+            masv.InnerText = cmbMaSinhVien.Text;
+            monhoc.InnerText = cmbMonHoc.Text;
+            sinhvien.SetAttributeNode(masv);
+            sinhvien.SetAttributeNode(monhoc);
+            sinhvien.AppendChild(diemlan1);
+            sinhvien.AppendChild(diemlan2);
+            doc.DocumentElement.AppendChild(sinhvien);
+            doc.Save(path);
+            MessageBox.Show("Thêm thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void sua()
+        {
+            doc.Load(path);
+            XmlNode node = doc.SelectSingleNode("/bangdiem/sinhvien[@masv='" + (cmbMaSinhVien.Text).Trim() + "']");
+            if (node != null)
+            {
+                node.Attributes[0].InnerText = cmbMaSinhVien.Text;
+                node.Attributes[1].InnerText = cmbMonHoc.Text;
+                node.ChildNodes[1].InnerText = txtDiemLan1.Text;
+                node.ChildNodes[2].InnerText = txtDiemLan2.Text;
+                doc.Save(path);
+                MessageBox.Show("Sửa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Mã sinh viên muốn sửa không có trong CSDL!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void btnThem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (cmbMaSinhVien.Text == "" || cmbMonHoc.Text == "" || txtDiemLan1.Text == "" || txtDiemLan2.Text == "")
+                {
+                    MessageBox.Show("Vui lòng nhập đầy đủ thông tin muốn thêm!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    them();
+                    hien_thi();
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Có lỗi xảy ra! Không thể thêm", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
     }
 }
